@@ -47,15 +47,42 @@ async function scrapAllPages() {
     });
   }
 
-  async function goToNextPage() {
-    const nextButton = document.querySelector('.pagination__item.page-control.next');
-    if (nextButton && !nextButton.classList.contains('disabled')) {
-      nextButton.click();
-      // Esperar a que la nueva página cargue
-      await delay(2000);
+  async function goToPage(pageNumber) {
+    // Buscar el botón de la página específica
+    const pageButtons = document.querySelectorAll('.pagination__item.page-number');
+    let targetButton = null;
+
+    // Primero intentamos encontrar el botón directo
+    for (const button of pageButtons) {
+      if (button.textContent.trim() === pageNumber.toString()) {
+        targetButton = button;
+        break;
+      }
+    }
+
+    // Si no encontramos el botón (porque está oculto en "..."),
+    // necesitamos modificar la URL directamente
+    if (!targetButton) {
+      // Obtener la URL actual
+      let currentUrl = window.location.href;
+      // Verificar si ya existe un parámetro de página
+      if (currentUrl.includes('page=')) {
+        currentUrl = currentUrl.replace(/page=\d+/, `page=${pageNumber}`);
+      } else {
+        // Agregar el parámetro de página
+        const separator = currentUrl.includes('?') ? '&' : '?';
+        currentUrl = `${currentUrl}${separator}page=${pageNumber}`;
+      }
+      // Navegar a la nueva URL
+      window.location.href = currentUrl;
+      await delay(2000); // Esperar a que cargue la página
       return true;
     }
-    return false;
+
+    // Si encontramos el botón, lo clickeamos
+    targetButton.click();
+    await delay(2000); // Esperar a que cargue la página
+    return true;
   }
 
   console.log(`Iniciando scraping. Total de páginas detectadas: ${totalPages}`);
@@ -87,16 +114,16 @@ async function scrapAllPages() {
       }
     });
 
-    if (currentPage < totalPages) {
+    currentPage++;
+    
+    if (currentPage <= totalPages) {
       // Ir a la siguiente página
-      const success = await goToNextPage();
+      const success = await goToPage(currentPage);
       if (!success) {
-        console.log('Error al navegar a la siguiente página');
+        console.log(`Error al navegar a la página ${currentPage}`);
         break;
       }
     }
-    
-    currentPage++;
   }
 
   console.log(`Scraping completado. Total de productos encontrados: ${allProducts.length}`);

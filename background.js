@@ -6,6 +6,9 @@ chrome.runtime.onConnect.addListener(function(port) {
         console.log("Value is set");
       });
     }
+    if (msg.cmd === "progress-scrap"){
+      console.log(msg.progress);
+    }
     if (msg.cmd === "get-products"){
       chrome.storage.local.get(["products"]).then((result) => {
         port.postMessage({cmd: 'result-products', result});
