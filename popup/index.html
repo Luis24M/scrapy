@@ -3,6 +3,24 @@
 <head>
   <title>Scraping Plaza Vea</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 5px 20px;
+      width: 400px;
+    }
+    .btns {
+      display: flex;
+      margin-bottom: 10px;
+      justify-content: space-around;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
     #txt-data {
       white-space: pre-wrap;
       max-height: 300px;
@@ -12,10 +30,11 @@
   </style>
 </head>
 <body>
-  <button id="scrapea">Scrapea</button>
-  <button id="product">Ver Productos</button>
-  <pre id="txt-data">Aquí aparecerán los datos de los productos...</pre>
-
+  <div class="btns">
+    <button id="scrapea">Scrapea</button>
+    <button id="product">Ver Productos</button>
+  </div>
+  <div id="results"></div>
   <script src="index.js"></script>
 </body>
 </html>

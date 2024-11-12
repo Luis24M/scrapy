@@ -20,7 +20,19 @@ buttonProduct.addEventListener('click', async () => {
 port.onMessage.addListener(function(msg) {
   if (msg.cmd === "result-products") {
     const {result} = msg;
-    const txtData = document.getElementById('txt-data');
-    txtData.innerHTML = JSON.stringify(result, null, 2);
+    const results = document.getElementById('results');
+    results.style.display = 'block';
+    results.innerHTML = result.products.map(product => {
+      return `
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Nombre: ${product.name}</h2>
+            <h4 class="card-subtitle mb-2 text-muted">Vendedido ${product.sellerName}</h4>
+            <p class="card-text">Precio: ${product.salePrice}</p>
+          </div>
+        </div>
+      `;
+    }
+    ).join('');
   }
 });
